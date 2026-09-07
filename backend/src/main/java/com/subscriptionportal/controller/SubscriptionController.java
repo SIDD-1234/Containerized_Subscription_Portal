@@ -21,29 +21,29 @@ public class SubscriptionController {
 
     // Create subscription
     @PostMapping
-public ResponseEntity<?> createSubscription(
-        @RequestBody Subscription subscription) {
+    public ResponseEntity<?> createSubscription(
+            @RequestBody Subscription subscription) {
 
-    if (subscription.getCost() < 0) {
-        return ResponseEntity
-                .badRequest()
-                .body("Subscription cost cannot be negative.");
+        if (subscription.getCost() < 0) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Subscription cost cannot be negative.");
+        }
+
+        if (subscription.getStartDate() != null
+                && subscription.getRenewalDate() != null
+                && subscription.getRenewalDate()
+                        .isBefore(subscription.getStartDate())) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body("Renewal date cannot be before start date.");
+        }
+
+        Subscription saved = repository.save(subscription);
+
+        return ResponseEntity.ok(saved);
     }
-
-    if (subscription.getStartDate() != null
-            && subscription.getRenewalDate() != null
-            && subscription.getRenewalDate()
-                    .isBefore(subscription.getStartDate())) {
-
-        return ResponseEntity
-                .badRequest()
-                .body("Renewal date cannot be before start date.");
-    }
-
-    Subscription saved = repository.save(subscription);
-
-    return ResponseEntity.ok(saved);
-}
 
     // View all subscriptions
     @GetMapping
