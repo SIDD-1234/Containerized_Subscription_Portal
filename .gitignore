@@ -1,24 +1,42 @@
+# =========================
 # Java / Maven
-target/
+# =========================
+backend/target/
 *.class
 
-# Node / React
-node_modules/
-dist/
-.vite/
+# =========================
+# Node / React / Vite
+# =========================
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
 
-# Environment files
+# =========================
+# Environment / Secrets
+# =========================
 .env
 .env.*
 !.env.example
 
+# =========================
 # IDE
+# =========================
 .idea/
 .vscode/
 *.iml
 
+# =========================
 # OS
+# =========================
 .DS_Store
 
+# =========================
 # Logs
+# =========================
 *.log
+
+# =========================
+# Temporary files
+# =========================
+*.tmp
+*.swp
