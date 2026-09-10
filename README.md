@@ -1,3 +1,3 @@
 ## Development Status
 
-MVP development is in progress.
+Subscription Management MVP is feature complete.
