@@ -4,7 +4,7 @@ pipeline {
     parameters {
         choice(
             name: 'DEPLOY_ENV',
-            choices: ['local'],
+            choices: ['local', 'staging'],
             description: 'Deployment environment'
         )
 
