@@ -57,9 +57,9 @@ pipeline {
                     echo "Deploying to environment: ${DEPLOY_ENV}"
                     echo "Spring Boot port: ${SERVER_PORT}"
 
-                    sudo mkdir -p /opt/homebrew/var/www/subscription-portal
-                    sudo rm -rf /opt/homebrew/var/www/subscription-portal/*
-                    sudo cp -R frontend/dist/* /opt/homebrew/var/www/subscription-portal/
+                    mkdir -p /opt/homebrew/var/www/subscription-portal
+                    rm -rf /opt/homebrew/var/www/subscription-portal/*
+                    cp -R frontend/dist/* /opt/homebrew/var/www/subscription-portal/
 
                     echo "Frontend deployed to Nginx"
                 '''
