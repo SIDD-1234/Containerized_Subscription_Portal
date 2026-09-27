@@ -20,6 +20,7 @@ public class SubscriptionController {
     }
 
     // CREATE
+    // CREATE
     @PostMapping
     public ResponseEntity<?> createSubscription(
             @RequestBody Subscription subscription) {
@@ -40,7 +41,12 @@ public class SubscriptionController {
                     .body("Renewal date cannot be before start date.");
         }
 
+        // Every newly created subscription starts as DRAFT.
+        // It must be approved by ADMIN or MANAGER before becoming ACTIVE.
+        subscription.setStatus("DRAFT");
+
         Subscription saved = repository.save(subscription);
+
         return ResponseEntity.ok(saved);
     }
 

@@ -1,0 +1,9 @@
+com/subscription/portal/SearchSubscriptionTest.class
+com/subscription/portal/TestResultTracker.class
+com/subscription/portal/InvalidSubscriptionDataTest.class
+com/subscription/portal/BaseTest.class
+com/subscription/portal/CreateSubscriptionTest.class
+com/subscription/portal/SmokeTest.class
+com/subscription/portal/StatusUpdateTest.class
+com/subscription/portal/UpdateSubscriptionTest.class
+com/subscription/portal/ScreenshotExtension.class

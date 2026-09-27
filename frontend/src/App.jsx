@@ -13,7 +13,8 @@ function App() {
   const loadSubscriptions = async (query = "") => {
     try {
       const url = query.trim()
-        ? `${API_URL}?q=${encodeURIComponent(query)}` : API_URL;
+        ? `${API_URL}?q=${encodeURIComponent(query)}`
+        : API_URL;
 
       const response = await fetch(url);
 
@@ -21,9 +22,13 @@ function App() {
         throw new Error("Failed to load subscriptions.");
       }
 
-      const data = await response.json(); setSubscriptions(data);
+      const data = await response.json();
+      setSubscriptions(data);
+
+      return true;
     } catch (error) {
-      setMessage(error.message);
+      console.error("Failed to load subscriptions:", error);
+      return false;
     }
   };
 
@@ -44,47 +49,72 @@ function App() {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); setMessage("");
+    event.preventDefault();
+    setMessage("");
 
     if (Number(form.cost) < 0) {
-      setMessage("Subscription cost cannot be negative."); return;
+      setMessage("Subscription cost cannot be negative.");
+      return;
     }
 
     if (
-      form.startDate && form.renewalDate && form.renewalDate < form.startDate
+      form.startDate &&
+      form.renewalDate &&
+      form.renewalDate < form.startDate
     ) {
-      setMessage("Renewal date cannot be before start date."); return;
+      setMessage("Renewal date cannot be before start date.");
+      return;
     }
 
     const subscriptionData = {
-      ...form, cost: Number(form.cost),
+      ...form,
+      cost: Number(form.cost),
+      status: form.status || "DRAFT",
     };
 
     try {
       const response = await fetch(
-        editingId ? `${API_URL}/${editingId}` : API_URL, {
-        method: editingId ? "PUT" : "POST", headers: {
-          "Content-Type": "application/json",
-        }, body: JSON.stringify(subscriptionData),
-      }
+        editingId ? `${API_URL}/${editingId}` : API_URL,
+        {
+          method: editingId ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(subscriptionData),
+        }
       );
 
       const result = await response.text();
+
+      console.log("Subscription request");
+      console.log("Status:", response.status);
+      console.log("Response:", result);
 
       if (!response.ok) {
         throw new Error(result || "Request failed.");
       }
 
-      setMessage(
-        editingId
-          ? "Subscription updated successfully." : "Subscription created successfully."
-      );
+      const successMessage = editingId
+        ? "Subscription updated successfully."
+        : "Subscription created successfully.";
 
-      setForm(emptyForm); setEditingId(null);
+      // Reset form
+      setForm(emptyForm);
+      setEditingId(null);
 
-      await loadSubscriptions(search); await loadDashboard();
+      // Refresh data BEFORE showing success message.
+      // This prevents refresh errors from overwriting the success message.
+      await Promise.all([
+        loadSubscriptions(search),
+        loadDashboard(),
+      ]);
+
+      // Always show success after the operation and refresh.
+      setMessage(successMessage);
+
     } catch (error) {
-      setMessage(error.message);
+      console.error("Subscription operation failed:", error);
+      setMessage(error.message || "Request failed.");
     }
   };
 
@@ -132,19 +162,23 @@ function App() {
 
   const handleSearch = (event) => {
     const value = event.target.value; setSearch(value); loadSubscriptions(value);
-  }; const loadDashboard = async () => {
+  };
+
+  const loadDashboard = async () => {
     try {
-      const response = await fetch(
-        "/api/dashboard/summary"
-      );
+      const response = await fetch("/api/dashboard/summary");
 
       if (!response.ok) {
         throw new Error("Failed to load dashboard.");
       }
 
-      const data = await response.json(); setDashboard(data);
+      const data = await response.json();
+      setDashboard(data);
+
+      return true;
     } catch (error) {
-      setMessage(error.message);
+      console.error("Failed to load dashboard:", error);
+      return false;
     }
   };
 
