@@ -104,17 +104,17 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                    echo "Deploying to environment: ${DEPLOY_ENV}"
-                    echo "Spring Boot port: ${SERVER_PORT}"
+                echo "Deploying to environment: ${DEPLOY_ENV}"
+                echo "Spring Boot port: ${SERVER_PORT}"
 
-                    mkdir -p /opt/homebrew/var/www/subscription-portal
+                mkdir -p /opt/homebrew/var/www/subscription-portal
 
-                    rm -rf /opt/homebrew/var/www/subscription-portal/*
+                rm -rf /opt/homebrew/var/www/subscription-portal/*
 
-                    cp -R frontend/dist/* \
-                        /opt/homebrew/var/www/subscription-portal/
+                cp -R frontend/dist/. \
+                    /opt/homebrew/var/www/subscription-portal/
 
-                    echo "Frontend deployed to Nginx"
+                echo "Frontend deployed to Nginx"
                 '''
             }
         }
