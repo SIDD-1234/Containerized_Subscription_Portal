@@ -1,0 +1,59 @@
+---
+- name: Provision and Validate Subscription Management Portal
+  hosts: subscription_portal
+  connection: local
+  gather_facts: true
+
+  vars:
+    container_name: subscription-portal-week14
+    image_name: skm95/subscription-portal:8
+    stable_image: skm95/subscription-portal:1.0
+    host_port: 8082
+    container_port: 8081
+
+  tasks:
+
+    - name: Create application directory
+      file:
+        path: "{{ ansible_facts.env.HOME }}/subscription-portal"
+        state: directory
+        mode: "0755"
+
+    - name: Check whether application container exists
+      command: docker inspect "{{ container_name }}"
+      register: container_exists
+      failed_when: false
+      changed_when: false
+
+    - name: Start application container
+      command: >
+        docker run -d
+        --name "{{ container_name }}"
+        -p "{{ host_port }}:{{ container_port }}"
+        -e SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/subscription_portal
+        -e SPRING_DATASOURCE_USERNAME=root
+        -e SPRING_DATASOURCE_PASSWORD=root
+        "{{ image_name }}"
+      when: container_exists.rc != 0
+      register: container_start
+
+    - name: Check application health
+      command: >
+        curl -f http://localhost:{{ host_port }}/api/subscriptions
+      register: health_check
+      retries: 15
+      delay: 2
+      until: health_check.rc == 0
+      changed_when: false
+
+    - name: Display health check result
+      debug:
+        msg: "Subscription Management Portal health check PASSED."
+
+    - name: Display deployment information
+      debug:
+        msg:
+          - "Container: {{ container_name }}"
+          - "Image: {{ image_name }}"
+          - "Application: http://localhost:{{ host_port }}"
+          - "Health check: PASSED"
