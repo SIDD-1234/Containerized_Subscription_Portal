@@ -17,7 +17,7 @@ pipeline {
 
     environment {
         NODE_HOME = '/Users/siddhanthmungekar/.nvm/versions/node/v25.6.1'
-        PATH = "${NODE_HOME}/bin:/opt/homebrew/bin:${env.PATH}"
+        PATH = "${NODE_HOME}/bin:/opt/homebrew/bin:/Applications/Docker.app/Contents/Resources/bin:${env.PATH}"
     }
 
     stages {
