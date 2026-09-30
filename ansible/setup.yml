@@ -1,0 +1,82 @@
+---
+- name: Configure Subscription Management Portal Node
+  hosts: subscription_portal
+  connection: local
+  gather_facts: true
+
+  vars:
+    app_dir: "{{ ansible_env.HOME }}/subscription-portal"
+    nginx_dir: "/opt/homebrew/var/www/subscription-portal"
+
+  tasks:
+
+    - name: Display target system
+      debug:
+        msg: "Configuring {{ ansible_hostname }} ({{ ansible_os_family }})"
+
+    - name: Verify required directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - "{{ app_dir }}"
+        - "{{ nginx_dir }}"
+
+    - name: Verify Java installation
+      command: java -version
+      register: java_version
+      changed_when: false
+
+    - name: Verify Maven installation
+      command: mvn -version
+      register: maven_version
+      changed_when: false
+
+    - name: Verify Node.js installation
+      command: node --version
+      register: node_version
+      changed_when: false
+
+    - name: Verify npm installation
+      command: npm --version
+      register: npm_version
+      changed_when: false
+
+    - name: Verify Docker installation
+      command: docker --version
+      register: docker_version
+      changed_when: false
+
+    - name: Verify MySQL installation
+      command: mysql --version
+      register: mysql_version
+      changed_when: false
+
+    - name: Verify Nginx installation
+      command: nginx -v
+      register: nginx_version
+      changed_when: false
+
+    - name: Verify required ports
+      debug:
+        msg:
+          - "Spring Boot backend: port 8081"
+          - "Nginx: port 80"
+          - "MySQL: port 3306"
+
+    - name: Verify required services
+      shell: |
+        brew services list | grep -E 'mysql|nginx|jenkins'
+      register: services
+      changed_when: false
+
+    - name: Display configuration summary
+      debug:
+        msg:
+          - "Subscription Management Portal configuration completed."
+          - "Application directory: {{ app_dir }}"
+          - "Nginx directory: {{ nginx_dir }}"
+          - "Backend port: 8081"
+          - "MySQL port: 3306"
+          - "Nginx port: 80"
