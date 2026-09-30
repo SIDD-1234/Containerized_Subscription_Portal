@@ -40,3 +40,13 @@ frontend/.vite/
 # =========================
 *.tmp
 *.swp
+
+
+# Maven build and test artifacts
+**/target/
+
+# Logs
+*.log
+
+# Local runtime files
+*.pid
