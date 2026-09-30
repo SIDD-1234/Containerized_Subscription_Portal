@@ -89,13 +89,15 @@ pipeline {
             }
         }
 
-        stage('Docker Check') {
+        stage('Build Docker Image') {
             steps {
                 sh '''
-                    echo "Checking Docker..."
-                    docker version
-                    echo "Checking Docker Hub login..."
-                    docker info | grep -i username || true
+                    echo "Building Docker image..."
+
+                    docker build \
+                        -t skm95/subscription-portal:${BUILD_NUMBER} \
+                        -t skm95/subscription-portal:latest \
+                        .
                 '''
             }
         }
