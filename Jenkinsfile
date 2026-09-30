@@ -89,6 +89,17 @@ pipeline {
             }
         }
 
+        stage('Docker Check') {
+            steps {
+                sh '''
+                    echo "Checking Docker..."
+                    docker version
+                    echo "Checking Docker Hub login..."
+                    docker info | grep -i username || true
+                '''
+            }
+        }
+
         stage('Package') {
             steps {
                 sh '''
