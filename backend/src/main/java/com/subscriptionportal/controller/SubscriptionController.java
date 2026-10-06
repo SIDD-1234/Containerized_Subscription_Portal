@@ -138,12 +138,15 @@ public class SubscriptionController {
             @RequestHeader(value = "X-User-Role", defaultValue = "USER") String role) {
 
         // Only ADMIN and MANAGER can change subscription status
+        
+        // Only ADMIN and MODERATOR can change subscription status
         if (!role.equalsIgnoreCase("ADMIN")
+                && !role.equalsIgnoreCase("MODERATOR")
                 && !role.equalsIgnoreCase("MANAGER")) {
 
             return ResponseEntity
                     .status(403)
-                    .body("Only ADMIN or MANAGER can change subscription status.");
+                    .body("Only ADMIN or MODERATOR can change subscription status.");
         }
 
         Optional<Subscription> existing = repository.findById(id);
